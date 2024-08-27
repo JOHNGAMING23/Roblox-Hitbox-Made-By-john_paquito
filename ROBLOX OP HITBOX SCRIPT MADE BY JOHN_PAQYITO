@@ -1,0 +1,168 @@
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
+local Window = OrionLib:MakeWindow({
+    Name = "J Hub",
+    HidePremium = false,
+    IntroText = "English or Spanish",
+    SaveConfig = true,
+    ConfigFolder = "J Hub"
+})
+
+OrionLib:MakeNotification({
+    Name = "English why?",
+    Content = "Whoever moves first is gay",
+    Image = "rbxassetid://4483345998",
+    Time = 30
+})
+
+local Tab = Window:MakeTab({
+    Name = "Supporting Games",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local Section = Tab:AddSection({
+    Name = "100% Working in Unnamed shooter"
+})
+
+local Section = Tab:AddSection({
+    Name = "100% Working in Trench War"
+})
+
+local Section = Tab:AddSection({
+    Name = "100% Working in No scope"
+})
+
+local Section = Tab:AddSection({
+    Name = "100% Working in [FPS]Gun Grounds FFA"
+})
+
+local Tab = Window:MakeTab({
+    Name = "English",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local Section = Tab:AddSection({
+    Name = "Subscribe To john_paquito"
+})
+
+-- Button to change WalkSpeed
+Tab:AddButton({
+    Name = "Button!",
+    Callback = function()
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 200
+    end    
+})
+
+-- Walk speed editor
+Tab:AddTextbox({
+    Name = "Edit WalkSpeed",
+    Default = "16", -- Default Roblox walk speed
+    TextDisappear = true,
+    Callback = function(value)
+        local speed = tonumber(value)
+        if speed then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speed
+            OrionLib:MakeNotification({
+                Name = "Speed Changed",
+                Content = "WalkSpeed set to " .. speed,
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "Error",
+                Content = "Please enter a valid number",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        end
+    end
+})
+
+-- Hitbox size editor
+Tab:AddTextbox({
+    Name = "Edit Hitbox Size",
+    Default = "15", -- Default hitbox size
+    TextDisappear = true,
+    Callback = function(value)
+        local size = tonumber(value)
+        if size then
+            _G.HeadSize = size
+            OrionLib:MakeNotification({
+                Name = "Hitbox Size Changed",
+                Content = "Hitbox size set to " .. size,
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        else
+            OrionLib:MakeNotification({
+                Name = "Error",
+                Content = "Please enter a valid number",
+                Image = "rbxassetid://4483345998",
+                Time = 5
+            })
+        end
+    end
+})
+
+-- Button to activate Hitbox feature
+Tab:AddButton({
+    Name = "Activate Hitbox",
+    Callback = function()
+        _G.Disabled = true
+
+        game:GetService('RunService').RenderStepped:Connect(function()
+            if _G.Disabled then
+                for _, v in ipairs(game:GetService('Players'):GetPlayers()) do
+                    if v.Name ~= game.Players.LocalPlayer.Name then
+                        pcall(function()
+                            local humanoidRootPart = v.Character and v.Character:FindFirstChild("HumanoidRootPart")
+                            if humanoidRootPart then
+                                humanoidRootPart.Size = Vector3.new(_G.HeadSize, _G.HeadSize, _G.HeadSize)
+                                humanoidRootPart.Transparency = 0.6
+                                humanoidRootPart.BrickColor = BrickColor.new("Really black")
+                                humanoidRootPart.Material = Enum.Material.Neon
+                                humanoidRootPart.CanCollide = false
+                            end
+                        end)
+                    end
+                end
+            end
+        end)
+    end
+})
+
+-- Add draggable functionality
+local UserInputService = game:GetService("UserInputService")
+
+local dragToggle = false
+local dragStart = nil
+local startPos = nil
+
+local function onInputBegan(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragToggle = true
+        dragStart = input.Position
+        startPos = Window.MainFrame.Position
+    end
+end
+
+local function onInputChanged(input)
+    if dragToggle then
+        local delta = input.Position - dragStart
+        Window.MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end
+
+local function onInputEnded(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragToggle = false
+    end
+end
+
+UserInputService.InputBegan:Connect(onInputBegan)
+UserInputService.InputChanged:Connect(onInputChanged)
+UserInputService.InputEnded:Connect(onInputEnded)
+
+OrionLib:Init()
